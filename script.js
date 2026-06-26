@@ -7,10 +7,31 @@ let timeLeft = GAME_DURATION;
 let score = 0; // Track the player's score
 let timerElement = null;
 let scoreElement = null;
+let bubblesCreated = false;
 
 function initElements() {
   if (!timerElement) timerElement = document.getElementById("timer");
   if (!scoreElement) scoreElement = document.getElementById("score");
+  createBackgroundBubbles(12);
+}
+
+function createBackgroundBubbles(count = 10) {
+  if (bubblesCreated) return;
+  const container = document.getElementById('game-container');
+  if (!container) return;
+  bubblesCreated = true;
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('div');
+    b.className = 'bg-bubble';
+    const size = 60 + Math.random() * 220; // varied sizes
+    b.style.width = b.style.height = `${size}px`;
+    b.style.left = Math.random() * 100 + '%';
+    b.style.top = Math.random() * 100 + '%';
+    const duration = 18 + Math.random() * 28;
+    b.style.animationDuration = `${duration}s`;
+    b.style.opacity = 0.06 + Math.random() * 0.14;
+    container.appendChild(b);
+  }
 }
 
 // Update vertical progress bar based on score (target 20)

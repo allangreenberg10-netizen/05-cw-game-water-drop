@@ -42,18 +42,48 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    width: min(100%, 1100px);
+    margin: 0 auto;
+    padding: 8px 12px;
+}
+
+/* Hero/header outside the game container */
+.hero {
+    width: min(100%, 1100px);
+    margin: 18px 12px 6px;
+    position: relative;
+}
+
+.hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+}
+
+.hero-ribbon {
+    margin-top: 8px;
+    background: linear-gradient(90deg, rgba(46,157,247,0.95), rgba(139,209,203,0.95));
+    color: white;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    display: inline-block;
+    box-shadow: 0 8px 18px rgba(46,157,247,0.12);
 }
 
 .score-panel {
     display: flex;
     align-items: center;
-    width: min(100%, 1100px);
-    max-width: 1100px;
+    width: 100%;
     padding: 10px 14px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap; /* allow items to wrap on small screens */
 }
 
 .timer {
@@ -64,8 +94,9 @@ body {
 
 #game-container {
     position: relative;
-    width: 100vw;  /* 100% of Viewport Width */
-    height: 100vh; /* 100% of Viewport Height */
+    width: 100%;
+    max-width: 1100px;
+    height: min(75vh, 820px);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -77,10 +108,71 @@ body {
     overflow: hidden;
 }
 
+/* Responsive font sizing */
+.game-title { font-size: clamp(28px, 6vw, 56px); }
+.game-tagline { font-size: clamp(14px, 2.5vw, 18px); }
+.score { font-size: clamp(16px, 2.5vw, 24px); }
+#timer-container { font-size: clamp(14px, 2.2vw, 24px); }
+
 @keyframes bgShift {
     0% { background-position: 0% 0%; }
     50% { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
+}
+
+/* Decorative floating background bubbles */
+.bg-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 10%, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.02) 100%);
+    opacity: 0.12;
+    filter: blur(6px);
+    pointer-events: none;
+    transform: translateY(0) scale(1);
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(10vh) scale(0.95); opacity: 0.08; }
+    50% { opacity: 0.14; }
+    100% { transform: translateY(-10vh) scale(1.08); opacity: 0.02; }
+}
+
+/* Glass-style score panel */
+.score-panel {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(6px) saturate(120%);
+}
+
+/* Pulsing Start button */
+#start-btn {
+    transition: transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 8px 18px rgba(46,157,247,0.18);
+}
+
+#start-btn:active { transform: translateY(2px) scale(0.99); }
+
+#start-btn.pulse {
+    animation: pulse 1600ms ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 8px 20px rgba(46,157,247,0.14); transform: scale(1); }
+    50% { box-shadow: 0 14px 40px rgba(46,157,247,0.16); transform: scale(1.03); }
+    100% { box-shadow: 0 8px 20px rgba(46,157,247,0.14); transform: scale(1); }
+}
+
+/* Title polish */
+.game-title { text-shadow: 0 6px 18px rgba(46,157,247,0.12); letter-spacing: 1px; }
+
+/* Subtle vignette for depth */
+#game-container:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.06) 100%);
+    z-index: 10000;
 }
 
 .jerry-can {
@@ -219,11 +311,21 @@ body {
 }
 
 .game-title {
-    color: #131313;
-    font-size: 48px;
+    font-size: 56px;
     margin-top: 0;
-    margin-bottom: 5px;  /* reduced from 20px */
+    margin-bottom: 4px;
     text-align: center;
+    background: linear-gradient(90deg, #2E9DF7, #8BD1CB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleFloat 6s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
 }
 
 .game-tagline {
@@ -231,6 +333,17 @@ body {
     font-size: 18px;
     margin-bottom: 20px;
     text-align: center;
+}
+
+/* Decorative wave under the header for contextual separation */
+.hero:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 18px;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6), rgba(255,255,255,0)) ;
+    transform: translateY(-6px);
+    pointer-events: none;
 }
 
 @keyframes dropFall {
@@ -336,7 +449,6 @@ body {
     .game-wrapper, .score-panel, #game-container {
         width: 95vw;
     }
-    
     #game-container {
         height: 70vh;
     }
@@ -346,6 +458,15 @@ body {
     .cw-logo { width: 140px; }
     .score { font-size: 18px; }
     #timer-container { font-size: 18px; }
+}
+
+/* Small screens: compact layout and move progress bar lower */
+@media (max-width: 420px) {
+    .panel-right { width: 100%; display: flex; justify-content: space-between; gap: 8px; }
+    .score-panel { padding: 10px; }
+    #game-container { height: 60vh; }
+    .vertical-progress { right: 8px; top: auto; bottom: 12px; transform: none; height: 28%; }
+    .top-brand { display: none; }
 }
 
 /* Vertical progress bar that fills as the player approaches 20 points */
