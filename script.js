@@ -45,11 +45,8 @@ function updateProgress() {
 // Replace native alert with an in-game banner so any leftover alerts render as overlay
 function _replaceAlertWithBanner(msg) {
   try {
-    const container = document.getElementById('game-container');
-    if (!container) return console.log(msg);
-
-    // Remove any existing banner
-    const existing = container.querySelector('.banner-overlay');
+    // remove any existing global banner
+    const existing = document.querySelector('.banner-overlay');
     if (existing) existing.remove();
 
     const banner = document.createElement('div');
@@ -63,7 +60,7 @@ function _replaceAlertWithBanner(msg) {
     closeBtn.addEventListener('click', () => banner.remove());
     banner.appendChild(inner);
     banner.appendChild(closeBtn);
-    container.appendChild(banner);
+    document.body.appendChild(banner);
   } catch (e) {
     console.log('alert:', msg);
   }
@@ -141,8 +138,8 @@ function startGame() {
   const fill = document.getElementById('progress-fill');
   if (fill) fill.style.height = '0%';
 
-  // Remove any existing banner from previous games
-  const oldBanner = document.querySelector('#game-container .banner-overlay');
+  // Remove any existing global banner from previous games
+  const oldBanner = document.querySelector('.banner-overlay');
   if (oldBanner) oldBanner.remove();
 
   // Create new drops more frequently so game is easier to win
@@ -186,27 +183,25 @@ function endGame() {
 
 // Show a styled banner inside the game container
 function showBanner(message, type = 'win') {
-  const container = document.getElementById('game-container');
-
-  // Remove existing banner if present
-  const existing = container.querySelector('.banner-overlay');
+  // global banner appended to body so it covers full viewport
+  const existing = document.querySelector('.banner-overlay');
   if (existing) existing.remove();
-
   const banner = document.createElement('div');
   banner.className = `banner-overlay ${type}`;
-
   const msg = document.createElement('div');
   msg.className = 'banner-message';
   msg.textContent = message;
-
   const closeBtn = document.createElement('button');
   closeBtn.className = 'banner-close';
   closeBtn.textContent = 'Close';
   closeBtn.addEventListener('click', () => banner.remove());
-
   banner.appendChild(msg);
   banner.appendChild(closeBtn);
-  container.appendChild(banner);
+  // clicking outside the message (backdrop) closes the banner
+  banner.addEventListener('click', (ev) => {
+    if (ev.target === banner) banner.remove();
+  });
+  document.body.appendChild(banner);
 }
 
 function createDrop() {

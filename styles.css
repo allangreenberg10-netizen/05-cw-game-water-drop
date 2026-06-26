@@ -389,20 +389,20 @@ body {
 }
 
 /* Full-screen centered banner overlay for win/lose messages */
-#game-container .banner-overlay {
-    position: absolute;
-    inset: 0; /* cover the whole game area */
+.banner-overlay {
+    position: fixed;
+    inset: 0; /* cover the whole viewport */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    background: rgba(10,10,10,0.45); /* dark backdrop */
+    z-index: 100000;
+    background: rgba(10,10,10,0.55); /* dark backdrop */
     padding: 28px;
     transition: opacity 240ms ease, visibility 240ms ease;
 }
 
-#game-container .banner-overlay .banner-message {
-    width: min(100%, 900px);
+.banner-overlay .banner-message {
+    width: min(100%, 920px);
     color: #fff;
     font-weight: 800;
     font-size: 34px;
@@ -410,23 +410,23 @@ body {
     padding: 28px 36px;
     border-radius: 14px;
     text-align: center;
-    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.45);
     transform: translateY(6px) scale(0.98);
     animation: bannerPop 320ms cubic-bezier(.2,.9,.2,1) forwards;
 }
 
-#game-container .banner-overlay.win .banner-message {
+.banner-overlay.win .banner-message {
     background: linear-gradient(90deg, #2E9DF7 0%, #8BD1CB 100%);
 }
 
-#game-container .banner-overlay.lose .banner-message {
+.banner-overlay.lose .banner-message {
     background: linear-gradient(90deg, #F5402C 0%, #FF902A 100%);
 }
 
-#game-container .banner-overlay .banner-close {
+.banner-overlay .banner-close {
     position: absolute;
-    right: 28px;
-    top: 28px;
+    right: 20px;
+    top: 20px;
     background: rgba(255,255,255,0.12);
     border: none;
     color: #fff;
@@ -442,8 +442,8 @@ body {
 }
 
 @media (max-width: 600px) {
-    #game-container .banner-overlay { padding: 12px; }
-    #game-container .banner-overlay .banner-message { font-size: 20px; padding: 18px; }
+    .banner-overlay { padding: 12px; }
+    .banner-overlay .banner-message { font-size: 20px; padding: 18px; }
 }
 @media (max-width: 850px) {
     .game-wrapper, .score-panel, #game-container {
