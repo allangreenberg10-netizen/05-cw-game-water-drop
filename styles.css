@@ -24,12 +24,16 @@ Fonts:
     box-sizing: border-box;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevents scrollbars from appearing */
+    background-color: #f0f0f0; /* Replace with your background color */
+}
+
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f0f0;
     font-family: Arial, sans-serif;
 }
 
@@ -42,13 +46,14 @@ body {
 
 .score-panel {
     display: flex;
-    justify-content: space-between;  /* Space between score and button */
     align-items: center;
-    width: 800px;
-    padding: 10px;
-    background-color: #fff;
+    width: min(100%, 1100px);
+    max-width: 1100px;
+    padding: 10px 14px;
+    background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    gap: 12px;
 }
 
 .timer {
@@ -58,13 +63,24 @@ body {
 }
 
 #game-container {
-    width: 800px;
-    height: 600px;
-    background-color: #e6f7ff;
-    border: 2px solid #333;
-    border-radius: 8px;
     position: relative;
+    width: 100vw;  /* 100% of Viewport Width */
+    height: 100vh; /* 100% of Viewport Height */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #e6f7ff 0%, #d7f1ff 40%, #eafaff 100%);
+    background-size: 200% 200%;
+    animation: bgShift 12s ease-in-out infinite;
+    border: 2px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
     overflow: hidden;
+}
+
+@keyframes bgShift {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
 }
 
 .jerry-can {
@@ -81,9 +97,10 @@ body {
 }
 
 
+
 #start-btn {
     padding: 8px 16px;
-    background-color: #4CAF50;
+    background-color: #2E9DF7; /* charity: water blue */
     color: white;
     border: none;
     border-radius: 4px;
@@ -111,6 +128,30 @@ body {
     padding: 0;
     border-radius: 0;
     box-shadow: none;
+}
+
+/* Logo and score-panel responsive helpers */
+.cw-logo {
+    width: 220px;
+    max-height: 48px;
+    object-fit: contain;
+    display: block;
+}
+
+.panel-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto; /* push to the right */
+}
+
+.game-title {
+    color: #2E9DF7; /* brand blue */
+}
+
+/* Make start button slightly larger on touch devices */
+@media (hover: none) {
+    #start-btn { padding: 12px 18px; font-size: 18px; }
 }
 
 .water-drop,
@@ -160,6 +201,21 @@ body {
 .burst {
     animation: burstPop 0.2s ease-out forwards;
     pointer-events: none;
+}
+
+/* Improve drop visuals: larger default, inner highlight, subtle movement */
+.water-drop,
+.raindrop,
+.red-drop {
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.12));
+}
+
+.water-drop {
+    background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 6%, rgba(116,204,244,1) 30% , rgba(116,204,244,0.9) 100%);
+}
+
+.red-drop {
+    background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 6%, rgba(255,77,77,1) 30%, rgba(255,77,77,0.9) 100%);
 }
 
 .game-title {
@@ -218,6 +274,64 @@ body {
         opacity: 0;
     }
 }
+
+/* Full-screen centered banner overlay for win/lose messages */
+#game-container .banner-overlay {
+    position: absolute;
+    inset: 0; /* cover the whole game area */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    background: rgba(10,10,10,0.45); /* dark backdrop */
+    padding: 28px;
+    transition: opacity 240ms ease, visibility 240ms ease;
+}
+
+#game-container .banner-overlay .banner-message {
+    width: min(100%, 900px);
+    color: #fff;
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 1.1;
+    padding: 28px 36px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    transform: translateY(6px) scale(0.98);
+    animation: bannerPop 320ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+#game-container .banner-overlay.win .banner-message {
+    background: linear-gradient(90deg, #2E9DF7 0%, #8BD1CB 100%);
+}
+
+#game-container .banner-overlay.lose .banner-message {
+    background: linear-gradient(90deg, #F5402C 0%, #FF902A 100%);
+}
+
+#game-container .banner-overlay .banner-close {
+    position: absolute;
+    right: 28px;
+    top: 28px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+@keyframes bannerPop {
+    0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+    #game-container .banner-overlay { padding: 12px; }
+    #game-container .banner-overlay .banner-message { font-size: 20px; padding: 18px; }
+}
 @media (max-width: 850px) {
     .game-wrapper, .score-panel, #game-container {
         width: 95vw;
@@ -226,4 +340,77 @@ body {
     #game-container {
         height: 70vh;
     }
+}
+
+@media (max-width: 520px) {
+    .cw-logo { width: 140px; }
+    .score { font-size: 18px; }
+    #timer-container { font-size: 18px; }
+}
+
+/* Vertical progress bar that fills as the player approaches 20 points */
+.vertical-progress {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 50%;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 4px;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: flex-end; /* start fill at bottom */
+    z-index: 10001; /* above overlays */
+    pointer-events: none;
+}
+
+/* Top branding (jerry-can + charity:water) inside game container */
+.top-brand {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px 0;
+    z-index: 10002;
+    pointer-events: none; /* decorative only */
+    width: 100%; /* ensure it spans the wrapper so contents can center */
+}
+
+.top-brand .brand-can {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    background: transparent; /* ensure no background square */
+    border: none; /* remove any border */
+    box-shadow: none; /* remove outline/shadow */
+    display: inline-block;
+}
+
+.top-brand .brand-text {
+    color: #000; /* black text */
+    font-weight: 400; /* normal weight */
+    font-family: Avenir, Proxima Nova, Arial, sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 600px) {
+    .top-brand { top: 8px; left: 8px; }
+    .top-brand .brand-can { width: 36px; height: 36px; }
+    .top-brand .brand-text { font-size: 16px; }
+}
+
+.vertical-progress .progress-fill {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, #8BD1CB, #2E9DF7);
+    border-radius: 8px;
+    transition: height 300ms ease;
+}
+
+@media (max-width: 600px) {
+    .vertical-progress { right: 8px; width: 16px; height: 40%; }
 }
