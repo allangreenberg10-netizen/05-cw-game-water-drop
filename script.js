@@ -4,7 +4,26 @@ let dropMaker; // Will store our timer that creates drops regularly
 let countdown;
 const GAME_DURATION = 30;
 let timeLeft = GAME_DURATION;
+let score = 0; // Track the player's score
 const timerElement = document.getElementById("timer");
+const scoreElement = document.getElementById("score");
+
+// Winning and losing messages
+const winningMessages = [
+  "You're a water-saving hero! 💧",
+  "Fantastic catch! Help us save water!",
+  "Amazing! You've made a difference!",
+  "You crushed it! Keep up the great work!",
+  "Outstanding! You're a water drop champion!"
+];
+
+const losingMessages = [
+  "Try again! Every drop counts! 💧",
+  "Don't worry, you can do better next time!",
+  "Keep practicing! You'll get there!",
+  "Almost there! Give it another shot!",
+  "Keep trying! Every effort helps!"
+];
 
 // Function to generate a clean, procedural popping sound
 function playPopSound() {
@@ -36,6 +55,8 @@ function startGame() {
   if (gameRunning) return;
 
   gameRunning = true;
+  score = 0; // Reset score at start of new game
+  scoreElement.textContent = score;
   timeLeft = GAME_DURATION;
   timerElement.textContent = timeLeft;
 
@@ -60,7 +81,18 @@ function endGame() {
   }
 
   gameRunning = false;
-  alert("Time's up!");
+  
+  // Determine if player won (20 or more points) and show appropriate message
+  let message;
+  if (score >= 20) {
+    const randomIndex = Math.floor(Math.random() * winningMessages.length);
+    message = `🎉 ${winningMessages[randomIndex]} Final Score: ${score}`;
+  } else {
+    const randomIndex = Math.floor(Math.random() * losingMessages.length);
+    message = `${losingMessages[randomIndex]} Final Score: ${score}`;
+  }
+  
+  alert(message);
 }
 
 function createDrop() {
@@ -91,12 +123,17 @@ function createDrop() {
 
   // Click: play pop sound, burst animation, then remove drop
   drop.addEventListener("click", () => {
-    playPopSound();
-    drop.classList.add("burst");
+    // Only add to score if not already burst (prevent double-clicking)
+    if (!drop.classList.contains("burst")) {
+      score++; // Increment score by 1 for each drop clicked
+      scoreElement.textContent = score; // Update score display
+      playPopSound();
+      drop.classList.add("burst");
 
-    setTimeout(() => {
-      drop.remove();
-    }, 200);
+      setTimeout(() => {
+        drop.remove();
+      }, 200);
+    }
   });
 
   // Add the new drop to the game screen

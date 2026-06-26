@@ -197,6 +197,27 @@ body {
     }
 }
 
+/* Container for the overall splash effect to prevent layout breaks */
+.splash-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none; /* Particles can't be clicked */
+    animation: explode 0.4s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        /* Shoots the particle out to its randomized destination */
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
 @media (max-width: 850px) {
     .game-wrapper, .score-panel, #game-container {
         width: 95vw;
